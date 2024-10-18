@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
-"""Measures the total execution time for wait_n(n, max_delay)"""
+"""
+This module provides an asynchronous function that measures the runtime
+of running 4 instances of the async_comprehension function from the
+'1-async_comprehension' module
+"""
 import asyncio
 import time
-wait_n = __import__('1-concurrent_coroutines').wait_n
+from importlib import import_module as using
+
+async_comprehension = using('1-async_comprehension').async_comprehension
 
 
-def measure_time(n: int, max_delay: int) -> float:
-    """Returns total_time (total execution time) / n"""
-    start_time = time.perf_counter()
-    asyncio.run(wait_n(n, max_delay))
-    end_time = time.perf_counter()
-    return (end_time - start_time) / n
+async def measure_runtime() -> float:
+    """
+    Asynchronous function that measures and returns the runtime of
+    running 4 instances of the async_comprehension function.
+
+    Returns:
+        float: The runtime of the async_comprehension function in seconds.
+    """
+    start_time = time.time()
+    await asyncio.gather(*(async_comprehension() for _ in range(4)))
+    return time.time() - start_time
